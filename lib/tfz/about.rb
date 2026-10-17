@@ -9,7 +9,7 @@ module Tfz
     SUPPORT_EMAIL = 'help@ninepointlabs.com'
     CREATED = 'January 2026' # first commit: 2026-01-21
     LICENSE_NAME = 'MIT License'
-    COPYRIGHT = '© 2026 Tim Fall' # as written in LICENSE
+    COPYRIGHT = '© 2026 Nine Point Labs' # as written in LICENSE
     LICENSE_FILE = File.expand_path('LICENSE.txt', __dir__)
 
     PRIVACY = 'No accounts, analytics or telemetry. tfz only connects to the ' \
