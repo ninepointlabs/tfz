@@ -18,6 +18,8 @@ module Tfz
           list_feeds
         when 'version', '-v', '--version'
           puts "tfz version #{VERSION}"
+        when 'about', '--about'
+          show_about
         when 'help', '-h', '--help'
           show_help
         else
@@ -69,6 +71,12 @@ module Tfz
       end
     end
 
+    def self.show_about
+      puts About.lines
+      puts
+      puts About.license_text
+    end
+
     def self.show_help
       puts <<~HELP
         Terminal Feedz (tfz) - A beautiful terminal feed reader
@@ -79,6 +87,7 @@ module Tfz
           tfz remove <url>         Remove a feed
           tfz list                 List configured feeds
           tfz version              Show version
+          tfz about                Show version, license, support and privacy info
           tfz help                 Show this help
 
         Examples:

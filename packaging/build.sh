@@ -46,7 +46,7 @@ Section: utils
 Priority: optional
 Architecture: all
 Depends: ruby (>= 3.0), ruby-bundler
-Maintainer: Tim Fall <tim@example.com>
+Maintainer: Nine Point Labs <help@ninepointlabs.com>
 Description: Terminal-based RSS/Atom feed reader
  A beautiful terminal-based RSS/Atom feed reader with full article
  rendering, category organization, and vim-style navigation.

@@ -23,3 +23,7 @@ gem 'rouge', '~> 4.2'        # Syntax highlighting for code blocks
 group :development do
   gem 'pry', '~> 0.14'
 end
+
+group :test do
+  gem 'minitest', '~> 5.0'
+end
