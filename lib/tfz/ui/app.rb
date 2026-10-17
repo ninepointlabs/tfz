@@ -29,6 +29,12 @@ module Tfz
         
         # Menu items
         @menu_items = []
+
+        # About state
+        @about_return_mode = :main_menu
+        @about_scroll = 0
+        @about_show_license = false
+        @about_message = nil
       end
 
       def run
@@ -77,6 +83,8 @@ module Tfz
             draw_subscriptions
           when :reader
             draw_reader_screen
+          when :about
+            draw_about
           end
           handle_input
         end
@@ -98,6 +106,7 @@ module Tfz
           "Browse Feeds",
           "Manage Categories",
           "Manage Subscriptions",
+          "About",
           "Quit"
         ]
         
@@ -111,7 +120,7 @@ module Tfz
         
         write_line ""
         write_line @pastel.dim("─" * width)
-        write_line @pastel.dim("↑↓:navigate Enter:select q:quit")
+        write_line @pastel.dim("↑↓:navigate Enter:select ?:about q:quit")
       end
 
       # ========== CATEGORY MENU ==========
@@ -152,9 +161,9 @@ module Tfz
         write_line ""
         write_line @pastel.dim("─" * width)
         if @menu_items[@selected_index][:type] == :category
-          write_line @pastel.dim("Enter:view r:rename d:delete Esc:back")
+          write_line @pastel.dim("Enter:view r:rename d:delete ?:about Esc:back")
         else
-          write_line @pastel.dim("Enter:select Esc:back")
+          write_line @pastel.dim("Enter:select ?:about Esc:back")
         end
       end
 
@@ -228,7 +237,7 @@ module Tfz
         end
         
         write_line ""
-        footer = "Entries: #{@entries.length} | ↑↓:navigate Enter:read m:mark c:category s:status r:refresh Esc:back"
+        footer = "Entries: #{@entries.length} | ↑↓:navigate Enter:read m:mark c:category s:status r:refresh ?:about Esc:back"
         write_line @pastel.dim(footer)
       end
 
@@ -266,9 +275,9 @@ module Tfz
         write_line ""
         write_line @pastel.dim("─" * width)
         if @menu_items[@selected_index][:type] == :feed
-          write_line @pastel.dim("Enter:change-category d:delete Esc:back")
+          write_line @pastel.dim("Enter:change-category d:delete ?:about Esc:back")
         else
-          write_line @pastel.dim("Enter:select Esc:back")
+          write_line @pastel.dim("Enter:select ?:about Esc:back")
         end
       end
 
@@ -297,13 +306,73 @@ module Tfz
         write_line @pastel.dim("─" * width)
         scroll_indicator = @content_lines.length > visible_height ? 
           " | Line #{@reader_scroll + 1}/#{@content_lines.length}" : ""
-        write_line @pastel.dim("Esc/q:back ↑↓:scroll o:open-url#{scroll_indicator}")
+        write_line @pastel.dim("Esc/q:back ↑↓:scroll o:open-url ?:about#{scroll_indicator}")
+      end
+
+      # ========== ABOUT ==========
+
+      def about_lines(width)
+        label = ->(name) { @pastel.dim(name.ljust(11)) }
+        wrap = ->(text, indent) { wrap_text(text, width - indent).split("\n").each_with_index.map { |l, i| i.zero? ? l : (" " * indent) + l } }
+
+        lines = []
+        lines << "#{@pastel.cyan.bold(About::NAME)} #{@pastel.dim("Version #{VERSION}")}"
+        lines << About::TAGLINE
+        lines << ""
+        lines << label.("Made by") + About::ORGANIZATION
+        lines << label.("Created") + About::CREATED
+        lines << label.("License") + "#{About::LICENSE_NAME}, #{About::COPYRIGHT}"
+        lines << label.("Support") + About::SUPPORT_EMAIL
+        lines.concat(wrap.(About.built_with, 11).tap { |l| l[0] = label.("Built with") + l[0] })
+        lines << ""
+        lines.concat(wrap.(About::PRIVACY, 11).tap { |l| l[0] = label.("Privacy") + l[0] })
+        if @about_show_license
+          lines << ""
+          lines << @pastel.dim("─" * [width, 40].min)
+          About.license_text.split("\n\n").each do |paragraph|
+            lines.concat(wrap_text(paragraph.split.join(" "), width).split("\n"))
+            lines << ""
+          end
+        end
+        lines
+      end
+
+      def draw_about
+        height = TTY::Screen.height
+        width = TTY::Screen.width
+
+        clear_and_home
+
+        write_line @pastel.cyan.bold("About tfz")
+        write_line @pastel.dim("─" * width)
+        write_line ""
+
+        lines = about_lines(width)
+        visible_height = height - 6
+        @about_scroll = [[@about_scroll, lines.length - visible_height].min, 0].max
+        (lines[@about_scroll, visible_height] || []).each { |line| write_line line }
+
+        $stdout.write "\033[#{height - 2};1H"  # Move to footer position
+        write_line @pastel.dim("─" * width)
+        write_line @about_message ? @pastel.yellow(@about_message[0, width - 1]) : ""
+        footer = "e:email-support y:copy-email l:#{@about_show_license ? 'hide' : 'show'}-license ↑↓:scroll Esc/q:back"
+        $stdout.write @pastel.dim(footer[0, width - 1])
+      end
+
+      def open_about
+        @about_return_mode = @mode
+        @about_scroll = 0
+        @about_show_license = false
+        @about_message = nil
+        @mode = :about
       end
 
       # ========== INPUT HANDLERS ==========
       
       def handle_input
         key = @reader.read_keypress(nonblock: false)
+
+        return open_about if key == "?" && @mode != :about
         
         case @mode
         when :main_menu
@@ -316,6 +385,43 @@ module Tfz
           handle_subscriptions_input(key)
         when :reader
           handle_reader_input(key)
+        when :about
+          handle_about_input(key)
+        end
+      end
+
+      def handle_about_input(key)
+        visible_height = TTY::Screen.height - 6
+
+        case key
+        when "q", "\e", "\u0003"
+          @mode = @about_return_mode
+        when "e"
+          @about_message = if About.open_url(About.mailto_url)
+                             "Opening your email app to write to #{About::SUPPORT_EMAIL}"
+                           else
+                             "No xdg-open found; write to #{About::SUPPORT_EMAIL}"
+                           end
+        when "y"
+          tool = About.copy_to_clipboard(About::SUPPORT_EMAIL)
+          @about_message = if tool
+                             "Copied #{About::SUPPORT_EMAIL} to the clipboard"
+                           else
+                             "No clipboard tool found (wl-copy, xclip); email #{About::SUPPORT_EMAIL}"
+                           end
+        when "l"
+          @about_show_license = !@about_show_license
+          @about_scroll = 0
+        when "\e[A", "k"
+          @about_scroll = [@about_scroll - 1, 0].max
+        when "\e[B", "j"
+          @about_scroll += 1
+        when "\e[5~"
+          @about_scroll = [@about_scroll - visible_height, 0].max
+        when "\e[6~"
+          @about_scroll += visible_height
+        when "g"
+          @about_scroll = 0
         end
       end
 
@@ -343,7 +449,9 @@ module Tfz
             @mode = :subscriptions
             @selected_index = 0
             @scroll_offset = 0
-          when 3  # Quit
+          when 3  # About
+            open_about
+          when 4  # Quit
             cleanup_screen
             exit 0
           end

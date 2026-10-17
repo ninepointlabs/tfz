@@ -66,6 +66,7 @@ tfz              # Launch TUI
 tfz add <url>    # Add a feed (prompts for category)
 tfz remove <url> # Remove a feed
 tfz list         # List configured feeds
+tfz about        # Version, license, support and privacy info
 ```
 
 ### Keyboard Shortcuts
@@ -75,6 +76,7 @@ tfz list         # List configured feeds
 |-----|--------|
 | `↑/↓` or `j/k` | Navigate |
 | `Enter` | Select |
+| `?` | About tfz |
 | `q` | Quit |
 
 **Feed List:**
@@ -97,6 +99,21 @@ tfz list         # List configured feeds
 | `g/G` | Top/Bottom |
 | `o` | Open in browser |
 | `Esc` or `q` | Back to list |
+
+**About:**
+
+Open it with `?` from any screen, or choose **About** in the main menu. It
+shows the version, Nine Point Labs, the license, the support address
+([help@ninepointlabs.com](mailto:help@ninepointlabs.com)), what tfz does with
+your data, and the Ruby and gem versions.
+
+| Key | Action |
+|-----|--------|
+| `e` | Email support (opens your mail app with version details filled in) |
+| `y` | Copy the support address (needs `wl-copy`, `xclip` or `xsel`) |
+| `l` | Show/hide the license text |
+| `↑/↓` or `j/k`, `PgUp/PgDn` | Scroll |
+| `Esc` or `q` | Back |
 
 ## Configuration
 

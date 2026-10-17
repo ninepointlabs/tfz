@@ -20,6 +20,7 @@ require 'rouge'
 $stdout.sync = true
 
 require_relative 'tfz/version'
+require_relative 'tfz/about'
 require_relative 'tfz/config'
 require_relative 'tfz/feed_manager'
 require_relative 'tfz/feed_fetcher'
