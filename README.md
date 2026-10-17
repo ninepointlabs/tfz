@@ -31,17 +31,17 @@ autonomix-cli add https://github.com/ninepointlabs/tfz
 
 **Debian/Ubuntu:**
 ```bash
-sudo dpkg -i tfz_0.1.1_amd64.deb
+sudo dpkg -i tfz_0.1.1_all.deb
 ```
 
 **Fedora/RHEL:**
 ```bash
-sudo rpm -i tfz-0.1.1-1.x86_64.rpm
+sudo rpm -i tfz-0.1.1-1.fc44.noarch.rpm
 ```
 
 **Arch Linux:**
 ```bash
-sudo pacman -U tfz-0.1.1-1-x86_64.pkg.tar.zst
+sudo pacman -U tfz-0.1.1-1-any.pkg.tar.zst
 ```
 
 ### From Source
