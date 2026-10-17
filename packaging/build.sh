@@ -132,7 +132,7 @@ pkgver=$VERSION
 pkgrel=1
 pkgdesc="Terminal-based RSS/Atom feed reader"
 arch=('any')
-url="https://github.com/timfallmk/tfz"
+url="https://github.com/ninepointlabs/tfz"
 license=('MIT')
 depends=('ruby' 'ruby-bundler')
 

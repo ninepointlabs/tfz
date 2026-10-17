@@ -49,7 +49,7 @@ sudo pacman -U tfz-0.1.1-1-any.pkg.tar.zst
 Requires Ruby 3.0+ and Bundler.
 
 ```bash
-git clone https://github.com/timfallmk/tfz.git
+git clone https://github.com/ninepointlabs/tfz.git
 cd tfz
 bundle install
 ./bin/tfz
