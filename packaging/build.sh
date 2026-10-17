@@ -2,7 +2,7 @@
 # Build script for tfz packages
 set -e
 
-VERSION="0.1.0"
+VERSION="0.1.1"
 PKG_NAME="tfz"
 DIST_DIR="dist"
 

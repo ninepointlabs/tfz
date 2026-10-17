@@ -19,21 +19,29 @@ A beautiful terminal-based RSS/Atom feed reader built with Ruby.
 
 ## Installation
 
+### With autonomix-cli
+
+Install and keep tfz updated from GitHub Releases with [autonomix-cli](https://github.com/ninepointlabs/autonomix-cli):
+
+```bash
+autonomix-cli add https://github.com/ninepointlabs/tfz
+```
+
 ### From Package (Recommended)
 
 **Debian/Ubuntu:**
 ```bash
-sudo dpkg -i tfz_0.1.0_amd64.deb
+sudo dpkg -i tfz_0.1.1_amd64.deb
 ```
 
 **Fedora/RHEL:**
 ```bash
-sudo rpm -i tfz-0.1.0-1.x86_64.rpm
+sudo rpm -i tfz-0.1.1-1.x86_64.rpm
 ```
 
 **Arch Linux:**
 ```bash
-sudo pacman -U tfz-0.1.0-1-x86_64.pkg.tar.zst
+sudo pacman -U tfz-0.1.1-1-x86_64.pkg.tar.zst
 ```
 
 ### From Source
